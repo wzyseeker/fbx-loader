@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="着色器">
+      <UniqueIdentifier>{9a99ea05-41d8-4b63-9442-57f0556ae797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="加载fbx文件">
+      <UniqueIdentifier>{e6f417b0-d70b-4320-ae48-b56dcc62ba9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="模型">
+      <UniqueIdentifier>{10028155-2bb5-476f-b32b-c07fb387c537}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="源.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\共享资源.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\自由相机.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\按键检测.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx模型加载源代码\fbx模型加载-静态模型.cpp">
+      <Filter>加载fbx文件</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx模型加载源代码\网格属性.cpp">
+      <Filter>加载fbx文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\物体管理.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx模型加载源代码\fbx模型加载-动态模型.cpp">
+      <Filter>加载fbx文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\TextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="工具代码\描述符堆管理.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="光源.hlsl">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="模型\房间.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\房间.mds">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\立方体.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\立方体测试.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\平面.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\平面.mds">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\球体.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\球体.mds">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\坐标.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\坐标.mds">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\立方体测试\立方体测试.mds">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="骨骼动画.hlsl">
+      <Filter>着色器</Filter>
+    </None>
+    <None Include="模型\骨骼旋转.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\立方体旋转.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\角色.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\双立方体骨骼.FBX">
+      <Filter>模型</Filter>
+    </None>
+    <None Include="模型\角色2.FBX">
+      <Filter>模型</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="工具代码\DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\共享资源.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\自由相机.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\按键检测.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx模型加载源代码\fbx模型加载.h">
+      <Filter>加载fbx文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx模型加载源代码\fbx模型加载-静态模型.h">
+      <Filter>加载fbx文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx模型加载源代码\模型表现结构.h">
+      <Filter>加载fbx文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx模型加载源代码\模型特征定义.h">
+      <Filter>加载fbx文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx模型加载源代码\网格属性.h">
+      <Filter>加载fbx文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\内存检测.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\物体管理.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx模型加载源代码\fbx模型加载-动态模型.h">
+      <Filter>加载fbx文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\TextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\描述符堆管理.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="工具代码\d3dx12.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="贴图\whitetex.dds">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
