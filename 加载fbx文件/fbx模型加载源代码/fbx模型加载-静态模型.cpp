@@ -1300,6 +1300,7 @@ void C静态物体::加载纹理(FbxSurfaceMaterial* p表面材质, C网格属性::S属性* 属性)
                                 wstring bug = L"加载模型材质时未找到贴图文件 line:" + to_wstring(__LINE__) + L'\n';
                                 OutputDebugString(bug.c_str());
                                 PostQuitMessage(0);
+                                return;
                             }
                         }
                         else
@@ -1311,6 +1312,7 @@ void C静态物体::加载纹理(FbxSurfaceMaterial* p表面材质, C网格属性::S属性* 属性)
                                 bug += to_wstring(__LINE__) + L"\n";
                                 OutputDebugString(bug.c_str());
                                 PostQuitMessage(0);
+                                return;
                             }
                         }
                         属性->纹理索引 = this->属性->纹理集.size() - 1;
