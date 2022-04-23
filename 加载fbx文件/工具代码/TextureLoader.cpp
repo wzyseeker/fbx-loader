@@ -116,7 +116,7 @@ int DirectX::LoadImageDataFromFile(BYTE** imageData, D3D12_RESOURCE_DESC& textur
 			CLSCTX_INPROC_SERVER,
 			IID_PPV_ARGS(&wicFactory)
 		);
-		if (FAILED(hr)) return 0;
+		if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 	}
 
 	// load a decoder for the image
@@ -128,21 +128,21 @@ int DirectX::LoadImageDataFromFile(BYTE** imageData, D3D12_RESOURCE_DESC& textur
 		&wicDecoder                      // the wic decoder to be created	
 	);
 	
-	if (FAILED(hr)) return 0;
+	if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 
 	// get image from decoder (this will decode the "frame")
 	hr = wicDecoder->GetFrame(0, &wicFrame);
-	if (FAILED(hr)) return 0;
+	if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 
 	// get wic pixel format of image
 	WICPixelFormatGUID pixelFormat;
 	hr = wicFrame->GetPixelFormat(&pixelFormat);
-	if (FAILED(hr)) return 0;
+	if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 
 	// get size of image
 	UINT textureWidth, textureHeight;
 	hr = wicFrame->GetSize(&textureWidth, &textureHeight);
-	if (FAILED(hr)) return 0;
+	if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 
 	// we are not handling sRGB types in this tutorial, so if you need that support, you'll have to figure
 	// out how to implement the support yourself
@@ -157,23 +157,23 @@ int DirectX::LoadImageDataFromFile(BYTE** imageData, D3D12_RESOURCE_DESC& textur
 		WICPixelFormatGUID convertToPixelFormat = GetConvertToWICFormat(pixelFormat);
 
 		// return if no dxgi compatible format was found
-		if (convertToPixelFormat == GUID_WICPixelFormatDontCare) return 0;
+		if (convertToPixelFormat == GUID_WICPixelFormatDontCare) return HRESULT_FROM_WIN32(GetLastError());
 
 		// set the dxgi format
 		dxgiFormat = GetDXGIFormatFromWICFormat(convertToPixelFormat);
 
 		// create the format converter
 		hr = wicFactory->CreateFormatConverter(&wicConverter);
-		if (FAILED(hr)) return 0;
+		if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 
 		// make sure we can convert to the dxgi compatible format
 		BOOL canConvert = FALSE;
 		hr = wicConverter->CanConvert(pixelFormat, convertToPixelFormat, &canConvert);
-		if (FAILED(hr) || !canConvert) return 0;
+		if (FAILED(hr) || !canConvert) return HRESULT_FROM_WIN32(GetLastError());
 
 		// do the conversion (wicConverter will contain the converted image)
 		hr = wicConverter->Initialize(wicFrame, convertToPixelFormat, WICBitmapDitherTypeErrorDiffusion, 0, 0, WICBitmapPaletteTypeCustom);
-		if (FAILED(hr)) return 0;
+		if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 
 		// this is so we know to get the image data from the wicConverter (otherwise we will get from wicFrame)
 		imageConverted = true;
@@ -191,13 +191,13 @@ int DirectX::LoadImageDataFromFile(BYTE** imageData, D3D12_RESOURCE_DESC& textur
 	{
 		// if image format needed to be converted, the wic converter will contain the converted image
 		hr = wicConverter->CopyPixels(0, bytesPerRow, imageSize, *imageData);
-		if (FAILED(hr)) return 0;
+		if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 	}
 	else
 	{
 		// no need to convert, just copy data from the wic frame
 		hr = wicFrame->CopyPixels(0, bytesPerRow, imageSize, *imageData);
-		if (FAILED(hr)) return 0;
+		if (FAILED(hr)) return HRESULT_FROM_WIN32(GetLastError());
 	}
 
 	// now describe the texture with the information we have obtained from the image
@@ -235,7 +235,7 @@ HRESULT DirectX::CreateImageDataTextureFromFile(ID3D12Device* device,
 	// make sure we have data
 	if (imageSize <= 0)
 	{
-		return false;
+		return HRESULT_FROM_WIN32(GetLastError());
 	}
 	
 	// create a default heap where the upload heap will copy its contents into (contents being the texture)
@@ -249,7 +249,7 @@ HRESULT DirectX::CreateImageDataTextureFromFile(ID3D12Device* device,
 		IID_PPV_ARGS(&texture));
 	if (FAILED(hr))
 	{
-		return false;
+		return HRESULT_FROM_WIN32(GetLastError());
 	}
 	texture->SetName(L"Texture Buffer Resource Heap");
 
@@ -272,7 +272,7 @@ HRESULT DirectX::CreateImageDataTextureFromFile(ID3D12Device* device,
 		IID_PPV_ARGS(&textureUploadHeap));
 	if (FAILED(hr))
 	{
-		return false;
+		return HRESULT_FROM_WIN32(GetLastError());
 	}
 	textureUploadHeap->SetName(L"Texture Buffer Upload Resource Heap");
 
