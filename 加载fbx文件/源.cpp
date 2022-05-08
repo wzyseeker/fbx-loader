@@ -130,7 +130,7 @@ struct SCBUFFER2
 struct SUBUFFER2
 {
 	S材质 gMat;
-	XMMATRIX gBoneTransform[128];
+	XMMATRIX gBoneTransform[256];
 };
 
 struct SUBUFFER3
@@ -382,6 +382,21 @@ LRESULT CALLBACK MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			按键检测.键4状态 = 1;
 			break;
 
+		case '5':
+			按键检测.键5状态 = 1;
+			break;
+
+		case '6':
+			按键检测.键6状态 = 1;
+			break;
+
+		case '7':
+			按键检测.键7状态 = 1;
+			break;
+
+		case '8':
+			按键检测.键8状态 = 1;
+			break;
 		}
 		return 0;
 
@@ -459,6 +474,22 @@ LRESULT CALLBACK MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		case '4':
 			按键检测.键4状态 = 0;
+			break;
+
+		case '5':
+			按键检测.键5状态 = 0;
+			break;
+
+		case '6':
+			按键检测.键6状态 = 0;
+			break;
+
+		case '7':
+			按键检测.键7状态 = 0;
+			break;
+
+		case '8':
+			按键检测.键8状态 = 0;
 			break;
 		}
 		return 0;
@@ -1186,13 +1217,14 @@ void OnResize()
 
 void BuildModel()
 {
-	//物体管理->加入静态物体FBX(L"线条", L"模型\\线条.FBX", DXGI_FORMAT_R32_UINT, 0.1);
-	//物体管理->静态物体[L"线条"]->导出mds文件(L"线条.mds");
-	//物体管理->加入静态物体MDS(L"坐标", L"模型\\坐标.mds");
-	//物体管理->加入静态物体MDS(L"房间", L"模型\\房间.mds");
-	//物体管理->加入动态物体FBX(L"角色", L"模型\\角色.fbx", DXGI_FORMAT_R32_UINT, 0.5);
-	//物体管理->动态物体[L"角色"]->导出mdd文件(L"角色.mdd");
-	物体管理->加入动态物体MDD(L"角色", L"模型\\角色.mdd");  //打开加入动态物体时，请关闭此功能避免重复
+	物体管理->加入静态物体FBX(L"线条", L"模型\\线条.FBX", DXGI_FORMAT_R16_UINT, 0.1);
+	物体管理->静态物体[L"线条"]->导出mds文件(L"线条.mds");
+
+	//物体管理->加入静态物体MDS(L"线条", L"模型\\线条\\线条.mds");
+	物体管理->加入静态物体MDS(L"球体", L"模型\\球体.mds");
+	//物体管理->加入动态物体FBX(L"角色", L"模型\\八重樱.FBX", DXGI_FORMAT_R32_UINT, 0.5);
+	//物体管理->动态物体[L"角色"]->导出mdd文件(L"八重樱.mdd");
+	物体管理->加入动态物体MDD(L"角色", L"模型\\mixamo2\\mixamo2.mdd");  //打开加入动态物体时，请关闭此功能避免重复
 	描述符堆管理->生成描述符堆();
 }
 
@@ -1201,7 +1233,7 @@ void SetUp()
 	// The window resized, so update the aspect ratio and recompute the projection matrix.
 	mProj = XMMatrixPerspectiveFovRH(XM_PI / 3, (float)mClientWidth / mClientHeight, 1.0f, 10000.0f);
 
-	for (int i = 0; i < 128; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		ubuffer2.gBoneTransform[i] = XMMatrixIdentity();
 	}
@@ -1242,7 +1274,7 @@ void Draw(float dt)
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO[1].Get())); //换静态物体时请将这里改成0
+	ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO[0].Get())); //换静态物体时请将这里改成0
 
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
@@ -1264,34 +1296,52 @@ void Draw(float dt)
 
 	mCommandList->SetDescriptorHeaps(1, 描述符堆管理->描述符堆.GetAddressOf());
 
-	//mCommandList->SetGraphicsRootSignature(mRootSignature[0].Get());
+	mCommandList->SetGraphicsRootSignature(mRootSignature[0].Get());
 
-	//mCommandList->SetGraphicsRoot32BitConstants(0, sizeof(SCBUFFER) / 4, &cbuffer, 0);
-
-	//map<wstring, C静态物体*>::iterator it = 物体管理->静态物体.begin();
-
-	//for (int i = 0; i < 物体管理->静态物体.size(); i++)
-	//{
-	//	for (int j = 0; j < it->second->属性->元素.size(); j++)
-	//	{
-	//		mCommandList->SetGraphicsRootDescriptorTable(2,
-	//			描述符堆管理->资源描述[it->second->物体名称键 + L"." + it->second->属性->元素[j]->物体名称 + L"纹理srv"]->hGPU描述符);
-
-	//		ubuffer.gMat = it->second->属性->元素[j]->材质;
-	//		ubuffer.gMat.光泽度 = 3.0f;
-	//		ubuffer.gWorld = it->second->属性->元素[j]->变换 * XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	//		mCommandList->SetGraphicsRoot32BitConstants(1, sizeof(SUBUFFER) / 4, &ubuffer, 0);
-	//		it->second->绘制网格(j);
-	//	}
-	//	it++;
-	//}
+	mCommandList->SetGraphicsRoot32BitConstants(0, sizeof(SCBUFFER) / 4, &cbuffer, 0);
 
 	if (按键检测.键1状态)
 	{
 		物体管理->动态物体[L"角色"]->当前轨道 = 0;
 		物体管理->动态物体[L"角色"]->动画轨道[0].当前时间 = 0.0f;
+		物体管理->动态物体[L"角色"]->动画轨道[0].速度 = 0.2f;
 	}
 
+	if (按键检测.键2状态)
+	{
+		物体管理->动态物体[L"角色"]->当前轨道 = 1;
+		物体管理->动态物体[L"角色"]->动画轨道[1].当前时间 = 0.0f;
+	}
+
+	if (按键检测.键3状态)
+	{
+		物体管理->动态物体[L"角色"]->当前轨道 = 2;
+		物体管理->动态物体[L"角色"]->动画轨道[2].当前时间 = 0.0f;
+	}
+
+	if (按键检测.键4状态)
+	{
+		物体管理->动态物体[L"角色"]->当前轨道 = 3;
+		物体管理->动态物体[L"角色"]->动画轨道[3].当前时间 = 0.0f;
+	}
+
+	if (按键检测.键5状态)
+	{
+		物体管理->动态物体[L"角色"]->当前轨道 = 4;
+		物体管理->动态物体[L"角色"]->动画轨道[4].当前时间 = 0.0f;
+	}
+
+	物体管理->动态物体[L"角色"]->更新时间(dt);
+
+	XMMATRIX* B = 0;
+	B = 物体管理->动态物体[L"角色"]->获取当前骨骼变换();
+
+	//for (int i = 0; i < 物体管理->动态物体[L"角色"]->m根节点->子节点数量; i++)
+	{
+		//遍历骨骼树(&物体管理->动态物体[L"角色"]->m根节点->子节点[i], B);
+	}
+
+	mCommandList->SetPipelineState(mPSO[1].Get());
 	mCommandList->SetGraphicsRootSignature(mRootSignature[1].Get());
 
 	cbuffer2Upload->Map(0, nullptr, (void**)&mMappedDatacb2);
@@ -1299,8 +1349,7 @@ void Draw(float dt)
 	cbuffer2Upload->Unmap(0, nullptr);
 	mCommandList->SetGraphicsRootConstantBufferView(0, cbuffer2Upload->GetGPUVirtualAddress());
 
-	物体管理->动态物体[L"角色"]->更新时间(dt);
-	XMMATRIX* B = 0;
+	//物体管理->动态物体[L"角色"]->更新时间(dt);
 	XMMATRIX* OBJ = 0;
 	B = 物体管理->动态物体[L"角色"]->获取当前骨骼变换();
 	for (int i = 0; i < 物体管理->动态物体[L"角色"]->骨骼数量; i++)
@@ -1316,9 +1365,9 @@ void Draw(float dt)
 	for (int i = 0; i < 物体管理->动态物体[L"角色"]->属性->元素.size(); i++)
 	{
 		ubuffer3.gObj = 物体管理->动态物体[L"角色"]->获取当前物体变换(i);
-		ubuffer3.gWorld = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+		ubuffer3.gWorld = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 		mCommandList->SetGraphicsRootDescriptorTable(2,
-			描述符堆管理->资源描述[物体管理->动态物体[L"角色"]->物体名称键 + L"." + 
+			描述符堆管理->资源描述[物体管理->动态物体[L"角色"]->物体名称键 + L"." +
 			物体管理->动态物体[L"角色"]->属性->元素[i]->物体名称 + L"纹理srv"]->hGPU描述符);
 
 		mCommandList->SetGraphicsRoot32BitConstants(3, sizeof(SUBUFFER3) / 4, &ubuffer3, 0);

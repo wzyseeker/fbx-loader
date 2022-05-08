@@ -30,7 +30,7 @@ cbuffer Constbuffer : register(b0)
 cbuffer Updatebuffer : register(b1)
 {
 	MATERAL mat;
-	float4x4 gBoneTransform[128];
+	float4x4 gBoneTransform[256];
 }
 
 cbuffer PerUpdatebuffer : register(b2)
