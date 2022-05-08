@@ -1862,11 +1862,13 @@ void C静态物体::体素化(float 粒度)
         }
         delete[] 测试体素块[n];
     }
-    测试体素块.~vector();
+    测试体素块.clear();
+    测试体素块.shrink_to_fit();
 
     for(int i = 0; i < m体素块.size(); i++)
         delete m体素块[i];
-    m体素块.~vector();
+    m体素块.clear();
+    m体素块.shrink_to_fit();
 }
 
 void C静态物体::体素采样线程(S备用资料* s备用资料, C网格属性* 属性, vector<S体素块*> m体素块, XMFLOAT3 采样点, UINT 体素块索引, UINT x, UINT y, UINT z)
@@ -2191,8 +2193,10 @@ void C静态物体::绘制网格(UINT 属性)
 
 void C静态物体::释放合并信息()
 {
-    m合并索引集.~vector();
-    m控制顶点集.~vector();
+    m合并索引集.clear();
+    m合并索引集.shrink_to_fit();
+    m控制顶点集.clear();
+    m控制顶点集.shrink_to_fit();
 }
 
 C静态物体::~C静态物体()

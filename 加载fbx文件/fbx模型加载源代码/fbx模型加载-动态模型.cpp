@@ -542,7 +542,7 @@ void C¶¯Ì¬ÎïÌå::µ¼ÈëmddÎÄ¼þ(wstring ÎÄ¼þÃû³Æ, wstring ÎïÌåÃû³Æ¼ü)
                 Í¼Æ¬Ãû³Æ[i] = ÎÄ¼þÃû³Æ[i];
             Í¼Æ¬Ãû³Æ[i] = L'\0';
 
-            i = 0;
+            i = ÎÄ¼þÃû³Æ.size();
             while (1)
             {
                 if (Í¼Æ¬Ãû³Æ[i] == L'/')
@@ -555,7 +555,7 @@ void C¶¯Ì¬ÎïÌå::µ¼ÈëmddÎÄ¼þ(wstring ÎÄ¼þÃû³Æ, wstring ÎïÌåÃû³Æ¼ü)
                     Í¼Æ¬Ãû³Æ[i] = L'\0';
                     break;
                 }
-                i++;
+                i--;
             }
             »ù´¡Â·¾¶ = Í¼Æ¬Ãû³Æ;
 
@@ -584,6 +584,7 @@ void C¶¯Ì¬ÎïÌå::µ¼ÈëmddÎÄ¼þ(wstring ÎÄ¼þÃû³Æ, wstring ÎïÌåÃû³Æ¼ü)
             }
 
             ÊôÐÔ->ÎÆÀí¼¯.resize(ÊôÐÔ->ÎÆÀí¼¯.size() + 1);
+            ÊôÐÔ->ÎÆÀí¼¯ÉÏ´«.resize(ÊôÐÔ->ÎÆÀí¼¯ÉÏ´«.size() + 1);
             if (ÎÄ¼þÀàÐÍ == L"dds")
             {
                 if (!SUCCEEDED(CreateDDSTextureFromFile12(Éè±¸.Get(), ÃüÁî¶ÓÁÐ.Get(), »ù´¡Â·¾¶.c_str(), this->ÊôÐÔ->ÎÆÀí¼¯[this->ÊôÐÔ->ÎÆÀí¼¯.size() - 1],
@@ -862,8 +863,14 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØFBXÎÄ¼þ(const WCHAR* ÎÄ¼þÂ·¾¶, wstring ÎïÌåÃû³Æ¼ü, DXGI_FORM
     if (¸ù½Úµã)
         for (int i = 0; i < ¸ù½Úµã->GetChildCount(); i++)
             ¼ÓÔØ½Úµã(¸ù½Úµã->GetChild(i));
+    ²¹³ä¹Ç÷ÀÊ÷();
+    ¹Ç÷ÀÊýÁ¿ = m¹Ç÷ÀÃû³Æ.size();
     ¼ÓÔØ²ã´Î(l³¡¾°);
     ¼ÓÔØÔìÐÍ(l³¡¾°);
+
+    SÖáºÍÏÞÖÆ sÖáºÍÏÞÖÆ;
+    sÖáºÍÏÞÖÆ.Ô¤Ðý×ª = XMMatrixIdentity();
+    ÖáºÍÏÞÖÆ.insert(pair<wstring, SÖáºÍÏÞÖÆ>(L"¸ù½Úµã", sÖáºÍÏÞÖÆ));
 
     s¹Ç÷À±ä»» = new XMMATRIX[¹Ç÷ÀÊýÁ¿];
     for (int i = 0; i < ¹Ç÷ÀÊýÁ¿; i++)
@@ -1075,9 +1082,65 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ²ã´Î(FbxNode* p½Úµã, S±ä»»½Úµã& ½Úµã)
     }
 }
 
+void C¶¯Ì¬ÎïÌå::²¹³ä¹Ç÷ÀÊ÷()
+{
+    S±ä»»½Úµã* p±ä»»½Úµã = nullptr;
+    S±ä»»½Úµã* p±ä»»½Úµã2 = nullptr;
+
+    for (int i = 0; i < m¹Ç÷ÀÃû³Æ.size(); i++)
+    {
+        p±ä»»½Úµã = nullptr;
+        ËÑË÷¹Ç÷ÀÊ÷(m¹Ç÷ÀÃû³Æ[i].c_str(), p±ä»»½Úµã);
+
+        if (p±ä»»½Úµã)
+        {
+            p±ä»»½Úµã2 = nullptr;
+            p±ä»»½Úµã2 = »ØËÝ¸ù½Úµã(p±ä»»½Úµã);
+            ±éÀú¹Ç÷ÀÊ÷(p±ä»»½Úµã2);
+        }
+    }
+}
+
+void C¶¯Ì¬ÎïÌå::±éÀú¹Ç÷ÀÊ÷(S±ä»»½Úµã* p¹Ç÷À½Úµã)
+{
+    bool ÊÇ·ñÎ´¼ÇÂ¼ = false;
+
+    ÊÇ·ñÎ´¼ÇÂ¼ = true;
+    for (int j = 0; j < m¹Ç÷ÀÃû³Æ.size(); j++)
+    {
+        if (m¹Ç÷ÀÃû³Æ[j].c_str() == p¹Ç÷À½Úµã->½ÚµãÃû³Æ)
+        {
+            ÊÇ·ñÎ´¼ÇÂ¼ = false;
+        }
+    }
+    if (ÊÇ·ñÎ´¼ÇÂ¼)
+    {
+        m¹Ç÷ÀÃû³Æ.push_back(p¹Ç÷À½Úµã->½ÚµãÃû³Æ);
+    }
+
+    for (int i = 0; i < p¹Ç÷À½Úµã->×Ó½ÚµãÊýÁ¿; i++)
+    {
+        ±éÀú¹Ç÷ÀÊ÷(&p¹Ç÷À½Úµã->×Ó½Úµã[i]);
+    }
+}
+
+C¶¯Ì¬ÎïÌå::S±ä»»½Úµã* C¶¯Ì¬ÎïÌå::»ØËÝ¸ù½Úµã(S±ä»»½Úµã* p¹Ç÷À½Úµã)
+{
+    S±ä»»½Úµã* p¹Ç÷À½Úµã2 = p¹Ç÷À½Úµã;
+    if(p¹Ç÷À½Úµã2->¸¸½Úµã)
+        while (p¹Ç÷À½Úµã2->¸¸½Úµã->½ÚµãÃû³Æ != L"¸ù½Úµã")
+        {
+            p¹Ç÷À½Úµã2 = p¹Ç÷À½Úµã2->¸¸½Úµã;
+        }
+
+    return p¹Ç÷À½Úµã2;
+}
+
 void C¶¯Ì¬ÎïÌå::¼ÓÔØ½Úµã(FbxNode* p½Úµã)
 {
     FbxNodeAttribute::EType ½ÚµãÊôÐÔ{};
+
+    ¼ÓÔØÖáºÍÏÞÖÆ(p½Úµã);
 
     if (p½Úµã->GetNodeAttribute())
     {
@@ -1103,6 +1166,17 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ½Úµã(FbxNode* p½Úµã)
             ¼ÓÔØ½Úµã(p½Úµã->GetChild(i));
         }
     }
+}
+
+void C¶¯Ì¬ÎïÌå::¼ÓÔØÖáºÍÏÞÖÆ(FbxNode* p½Úµã)
+{
+    SÖáºÍÏÞÖÆ sÖáºÍÏÞÖÆ;
+    FbxVector4 vec4 = p½Úµã->GetPreRotation(FbxNode::eSourcePivot);
+    //FBXSDK_printf("        Pre-Rotation: %f %f %f\n", vec4[0], vec4[1], vec4[2]);
+    sÖáºÍÏÞÖÆ.Ô¤Ðý×ª = XMMatrixRotationRollPitchYaw(vec4[1] * XM_PI / 180, vec4[2] * XM_PI / 180, vec4[0] * XM_PI / 180);
+    WCHAR* Ãû³Æ;
+    FbxUTF8ToWC(p½Úµã->GetName(), Ãû³Æ, 0);
+    ÖáºÍÏÞÖÆ.insert(pair<wstring, SÖáºÍÏÞÖÆ>(Ãû³Æ, sÖáºÍÏÞÖÆ));
 }
 
 void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
@@ -1143,8 +1217,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
     mÎïÌå¿ØÖÆ¶¥µã¼¯[mÎïÌå¿ØÖÆ¶¥µã¼¯.size() - 1].¿ØÖÆ¶¥µã¼¯.resize(¿ØÖÆ¶¥µãÊýÁ¿);
 
     XMMATRIX Ðý×ªÐÞÕý = XMMatrixIdentity();
-    Ðý×ªÐÞÕý *= XMMatrixRotationAxis(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f }, -XM_PI / 2);
-    Ðý×ªÐÞÕý *= XMMatrixRotationAxis(XMVECTOR{ 0.0f, 0.0f, 1.0f, 0.0f }, -XM_PI / 2);
+    //Ðý×ªÐÞÕý *= XMMatrixRotationAxis(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f }, XM_PI / 2);
+    //Ðý×ªÐÞÕý *= XMMatrixRotationAxis(XMVECTOR{ 0.0f, 0.0f, 1.0f, 0.0f }, XM_PI / 2);
 
     for (i = 0; i < l¶à±ßÐÎÊýÁ¿; i++)
     {
@@ -1156,9 +1230,9 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
             FbxVector4* ¿ØÖÆ¶¥µã = pÍø¸ñ->GetControlPoints();
             S¶¥µã ¶¥µã;
             XMVECTOR ¶¥µã±ä»» = { 0.0f, 0.0f, 0.0f, 0.0f };
-            ¶¥µã±ä»».m128_f32[0] = ¿ØÖÆ¶¥µã[l¿ØÖÆ¶¥µãË÷Òý].mData[0];
-            ¶¥µã±ä»».m128_f32[1] = ¿ØÖÆ¶¥µã[l¿ØÖÆ¶¥µãË÷Òý].mData[1];
-            ¶¥µã±ä»».m128_f32[2] = ¿ØÖÆ¶¥µã[l¿ØÖÆ¶¥µãË÷Òý].mData[2];
+            ¶¥µã±ä»».m128_f32[0] = ¿ØÖÆ¶¥µã[l¿ØÖÆ¶¥µãË÷Òý].mData[1];
+            ¶¥µã±ä»».m128_f32[1] = ¿ØÖÆ¶¥µã[l¿ØÖÆ¶¥µãË÷Òý].mData[2];
+            ¶¥µã±ä»».m128_f32[2] = ¿ØÖÆ¶¥µã[l¿ØÖÆ¶¥µãË÷Òý].mData[0];
             ¶¥µã±ä»» = XMVector3TransformCoord(¶¥µã±ä»», Ðý×ªÐÞÕý);
 
             ¶¥µã.Î»ÖÃ.x = ¶¥µã±ä»».m128_f32[0];
@@ -1211,9 +1285,9 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
                 switch (p·¨ÏòÁ¿->GetReferenceMode())
                 {
                 case FbxGeometryElement::eDirect:
-                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý).mData[0];
-                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý).mData[1];
-                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý).mData[2];
+                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý).mData[1];
+                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý).mData[2];
+                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý).mData[0];
                     ¶¥µã±ä»» = XMVector3Transform(¶¥µã±ä»», Ðý×ªÐÞÕý);
                     ¶¥µã.·¨ÏòÁ¿.x = ¶¥µã±ä»».m128_f32[0];
                     ¶¥µã.·¨ÏòÁ¿.y = ¶¥µã±ä»».m128_f32[1];
@@ -1222,9 +1296,9 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
 
                 case FbxGeometryElement::eIndexToDirect:
                     id = p·¨ÏòÁ¿->GetIndexArray().GetAt(l¿ØÖÆ¶¥µãË÷Òý);
-                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[0];
-                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[1];
-                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[2];
+                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[1];
+                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[2];
+                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[0];
                     ¶¥µã±ä»» = XMVector3Transform(¶¥µã±ä»», Ðý×ªÐÞÕý);
                     ¶¥µã.·¨ÏòÁ¿.x = ¶¥µã±ä»».m128_f32[0];
                     ¶¥µã.·¨ÏòÁ¿.y = ¶¥µã±ä»».m128_f32[1];
@@ -1240,9 +1314,9 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
                 switch (p·¨ÏòÁ¿->GetReferenceMode())
                 {
                 case FbxGeometryElement::eDirect:
-                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý).mData[0];
-                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý).mData[1];
-                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý).mData[2];
+                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý).mData[1];
+                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý).mData[2];
+                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý).mData[0];
                     ¶¥µã±ä»» = XMVector3Transform(¶¥µã±ä»», Ðý×ªÐÞÕý);
                     ¶¥µã.·¨ÏòÁ¿.x = ¶¥µã±ä»».m128_f32[0];
                     ¶¥µã.·¨ÏòÁ¿.y = ¶¥µã±ä»».m128_f32[1];
@@ -1251,9 +1325,9 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
 
                 case FbxGeometryElement::eIndexToDirect:
                     id = p·¨ÏòÁ¿->GetIndexArray().GetAt(lµ±Ç°¶¥µã¼ÆÊý);
-                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[0];
-                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[1];
-                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[2];
+                    ¶¥µã±ä»».m128_f32[0] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[1];
+                    ¶¥µã±ä»».m128_f32[1] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[2];
+                    ¶¥µã±ä»».m128_f32[2] = p·¨ÏòÁ¿->GetDirectArray().GetAt(id).mData[0];
                     ¶¥µã±ä»» = XMVector3Transform(¶¥µã±ä»», Ðý×ªÐÞÕý);
                     ¶¥µã.·¨ÏòÁ¿.x = ¶¥µã±ä»».m128_f32[0];
                     ¶¥µã.·¨ÏòÁ¿.y = ¶¥µã±ä»».m128_f32[1];
@@ -1285,10 +1359,15 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
 
     CÍø¸ñÊôÐÔ::SÊôÐÔ* ÊôÐÔ = new CÍø¸ñÊôÐÔ::SÊôÐÔ;
 
+    WCHAR* Íø¸ñÃû³Æ = 0;
+    FbxUTF8ToWC(pÍø¸ñ½Úµã->GetName(), Íø¸ñÃû³Æ, 0);
+    ÊôÐÔ->ÎïÌåÃû³Æ = Íø¸ñÃû³Æ;
+
     ¼ÓÔØ²ÄÖÊ(pÍø¸ñ½Úµã, ÊôÐÔ);
 
     XMMATRIX Ðý×ªÐÞÕý2 = XMMatrixIdentity();
-    Ðý×ªÐÞÕý2 *= XMMatrixRotationAxis(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f }, -XM_PI / 2);
+    Ðý×ªÐÞÕý2 *= XMMatrixRotationAxis(XMVECTOR{ 0.0f, 0.0f, 1.0f, 0.0f }, XM_PI / 2);
+    XMMATRIX Ðý×ªÐÞÕý3 = XMMatrixRotationAxis(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f }, -XM_PI / 2);
 
     ÊôÐÔ->Ë÷ÒýÊýÁ¿ = lµ±Ç°Ë÷ÒýÊýÁ¿;
     ÊôÐÔ->ÆðÊ¼Ë÷Òý = mË÷Òý¼ÆÊý - lµ±Ç°Ë÷ÒýÊýÁ¿;
@@ -1300,17 +1379,14 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØÍø¸ñ(FbxNode* pÍø¸ñ½Úµã)
     float x = pÍø¸ñ½Úµã->LclRotation.Get().mData[1];    float y = pÍø¸ñ½Úµã->LclRotation.Get().mData[2];    float z = pÍø¸ñ½Úµã->LclRotation.Get().mData[0];
     Ðý×ª¾ØÕó *= XMMatrixRotationRollPitchYaw(pÍø¸ñ½Úµã->LclRotation.Get().mData[1] * XM_PI / 180,
         pÍø¸ñ½Úµã->LclRotation.Get().mData[2] * XM_PI / 180, pÍø¸ñ½Úµã->LclRotation.Get().mData[0] * XM_PI / 180);
+    Ðý×ª¾ØÕó = ÖáºÍÏÞÖÆ[Íø¸ñÃû³Æ].Ô¤Ðý×ª * Ðý×ªÐÞÕý2 * Ðý×ª¾ØÕó;
     Î»ÒÆ¾ØÕó *= XMMatrixTranslation(pÍø¸ñ½Úµã->LclTranslation.Get().mData[0], pÍø¸ñ½Úµã->LclTranslation.Get().mData[1],
         pÍø¸ñ½Úµã->LclTranslation.Get().mData[2]);
-    Î»ÒÆ¾ØÕó = Î»ÒÆ¾ØÕó * Ðý×ªÐÞÕý2;
+    Î»ÒÆ¾ØÕó = Î»ÒÆ¾ØÕó * Ðý×ªÐÞÕý3;
     Î»ÒÆ¾ØÕó.r[0].m128_f32[0] = 1.0f; Î»ÒÆ¾ØÕó.r[0].m128_f32[1] = 0.0f; Î»ÒÆ¾ØÕó.r[0].m128_f32[2] = 0.0f;
     Î»ÒÆ¾ØÕó.r[1].m128_f32[0] = 0.0f; Î»ÒÆ¾ØÕó.r[1].m128_f32[1] = 1.0f; Î»ÒÆ¾ØÕó.r[1].m128_f32[2] = 0.0f;
     Î»ÒÆ¾ØÕó.r[2].m128_f32[0] = 0.0f; Î»ÒÆ¾ØÕó.r[2].m128_f32[1] = 0.0f; Î»ÒÆ¾ØÕó.r[2].m128_f32[2] = 1.0f;
     ÊôÐÔ->±ä»» = Ëõ·Å¾ØÕó * Ðý×ª¾ØÕó * Î»ÒÆ¾ØÕó;
-
-    WCHAR* Íø¸ñÃû³Æ = 0;
-    FbxUTF8ToWC(pÍø¸ñ½Úµã->GetName(), Íø¸ñÃû³Æ, 0);
-    ÊôÐÔ->ÎïÌåÃû³Æ = Íø¸ñÃû³Æ;
 
     this->ÊôÐÔ->Ìí¼ÓÔªËØ(ÊôÐÔ);
 }
@@ -1638,22 +1714,69 @@ void C¶¯Ì¬ÎïÌå::ÓÅ»¯¶¥µã()
         for (j = 0; j < mÎïÌå¿ØÖÆ¶¥µã¼¯[i].¿ØÖÆ¶¥µã¼¯.size(); j++)
             ºÏ²¢¶¥µã(i, j, ×îÐ¡cos½Ç¶È, ÌùÍ¼¶¥µã²ÉÑù×î´ó¼ä¸ô);
 
+    thread* Ïß³Ì = new thread[Ïß³ÌÊýÁ¿];
+    bool* ÊÇ·ñ½áÊø = new bool[Ïß³ÌÊýÁ¿];
+
+    for (int i = 0; i < Ïß³ÌÊýÁ¿; i++)
+    {
+        ÊÇ·ñ½áÊø[i] = true;
+        Ïß³Ì[i] = thread(ÓÅ»¯¶¥µãÏß³Ì³õÊ¼»¯);
+    }
+
+    bool ÊÇ·ñ¼ÌÐø = true;
+
     for (i = 0; i < Ë÷ÒýÊýÁ¿; i++)
     {
-        for (j = 0; j < mºÏ²¢Ë÷Òý¼¯.size(); j++)
+        while (1)
         {
-            for (k = 0; k < mºÏ²¢Ë÷Òý¼¯[j].¸±Ë÷Òý¼¯.size(); k++)
+            for (int j = 0; j < Ïß³ÌÊýÁ¿; j++)
             {
-                if (s±¸ÓÃ×ÊÁÏ->Ë÷Òý[i] == mºÏ²¢Ë÷Òý¼¯[j].¸±Ë÷Òý¼¯[k])
+                if (ÊÇ·ñ½áÊø[j] == true)
                 {
-                    s±¸ÓÃ×ÊÁÏ->Ë÷Òý[i] = mºÏ²¢Ë÷Òý¼¯[j].Ö÷Ë÷Òý;
-                    goto ÖØÐÂÑ­»·;
+                    Ïß³Ì[j].join();
+                    ÊÇ·ñ½áÊø[j] = false;
+
+                    Ïß³Ì[j] = thread(ÓÅ»¯¶¥µãÏß³Ì, s±¸ÓÃ×ÊÁÏ, &mºÏ²¢Ë÷Òý¼¯, i, &ÊÇ·ñ½áÊø[j]);
+
+                    goto ½áÊøÏß³Ì;
                 }
             }
         }
-    ÖØÐÂÑ­»·:
-        continue;
+
+    ½áÊøÏß³Ì: continue;
     }
+
+    for (int i = 0; i < Ïß³ÌÊýÁ¿; i++)
+        Ïß³Ì[i].join();
+
+    delete[] Ïß³Ì;
+    delete[] ÊÇ·ñ½áÊø;
+}
+
+void C¶¯Ì¬ÎïÌå::ÓÅ»¯¶¥µãÏß³Ì(S±¸ÓÃ×ÊÁÏ* s±¸ÓÃ×ÊÁÏ, vector<SºÏ²¢Ë÷Òý¼¯>* mºÏ²¢Ë÷Òý¼¯, int i, bool* ÊÇ·ñ½áÊø)
+{
+    int j = 0;
+    int k = 0;
+
+    for (j = 0; j < (*mºÏ²¢Ë÷Òý¼¯).size(); j++)
+    {
+        for (k = 0; k < (*mºÏ²¢Ë÷Òý¼¯)[j].¸±Ë÷Òý¼¯.size(); k++)
+        {
+            if (s±¸ÓÃ×ÊÁÏ->Ë÷Òý[i] == (*mºÏ²¢Ë÷Òý¼¯)[j].¸±Ë÷Òý¼¯[k])
+            {
+                s±¸ÓÃ×ÊÁÏ->Ë÷Òý[i] = (*mºÏ²¢Ë÷Òý¼¯)[j].Ö÷Ë÷Òý;
+                *ÊÇ·ñ½áÊø = 1;
+                return;
+            }
+        }
+    }
+
+    *ÊÇ·ñ½áÊø = true;
+}
+
+void C¶¯Ì¬ÎïÌå::ÓÅ»¯¶¥µãÏß³Ì³õÊ¼»¯()
+{
+
 }
 
 void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­(FbxScene* p³¡¾°)
@@ -1811,7 +1934,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1829,7 +1953,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1847,7 +1972,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Î»ÖÃ.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1866,7 +1992,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1884,7 +2011,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.resize(lÖ¡ÊýÁ¿);
+        if(lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1902,7 +2030,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ðý×ª.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1921,7 +2050,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1939,7 +2069,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1957,7 +2088,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
     if (l¶¯»­ÇúÏß)
     {
         int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-        m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.resize(lÖ¡ÊýÁ¿);
+        if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.size())
+            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].Ëõ·Å.resize(lÖ¡ÊýÁ¿);
 
         for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
         {
@@ -1981,7 +2113,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
         if (l¶¯»­ÇúÏß)
         {
             int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.resize(lÖ¡ÊýÁ¿);
+            if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.size())
+                m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.resize(lÖ¡ÊýÁ¿);
 
             for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
             {
@@ -1999,7 +2132,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
         if (l¶¯»­ÇúÏß)
         {
             int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.resize(lÖ¡ÊýÁ¿);
+            if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.size())
+                m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.resize(lÖ¡ÊýÁ¿);
 
             for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
             {
@@ -2017,7 +2151,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
         if (l¶¯»­ÇúÏß)
         {
             int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-            m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.resize(lÖ¡ÊýÁ¿);
+            if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.size())
+                m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].ÑÕÉ«.resize(lÖ¡ÊýÁ¿);
 
             for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
             {
@@ -2040,7 +2175,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
             if (l¶¯»­ÇúÏß)
             {
                 int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-                m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.resize(lÖ¡ÊýÁ¿);
+                if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.size())
+                    m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.resize(lÖ¡ÊýÁ¿);
 
                 for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
                 {
@@ -2059,7 +2195,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
             if (l¶¯»­ÇúÏß)
             {
                 int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-                m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.resize(lÖ¡ÊýÁ¿);
+                if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.size())
+                    m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.resize(lÖ¡ÊýÁ¿);
 
                 for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
                 {
@@ -2078,7 +2215,8 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¶¯»­Í¨µÀ(FbxAnimLayer* p¶¯»­²ã, FbxNode* p½Úµã, UINT Æ¬¶ÎË÷Ò
             if (l¶¯»­ÇúÏß)
             {
                 int lÖ¡ÊýÁ¿ = l¶¯»­ÇúÏß->KeyGetCount();
-                m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.resize(lÖ¡ÊýÁ¿);
+                if (lÖ¡ÊýÁ¿ > m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.size())
+                    m¶¯»­Êý¾Ý->Æ¬¶Î[Æ¬¶ÎË÷Òý].¶¯»­²ã[¶¯»­²ãË÷Òý].ÎïÌå[Ä£ÐÍË÷Òý].µÆ¹âÊôÐÔ.resize(lÖ¡ÊýÁ¿);
 
                 for (lÖ¡¼ÆÊý = 0; lÖ¡¼ÆÊý < lÖ¡ÊýÁ¿; lÖ¡¼ÆÊý++)
                 {
@@ -2233,8 +2371,10 @@ void C¶¯Ì¬ÎïÌå::¼ÓÔØ¹Ç÷ÀÃÉÆ¤ÐÅÏ¢(FbxNode* pÍø¸ñ½Úµã)
             Ðý×ª¾ØÕó.r[1].m128_f32[2] = l¾ØÕó.mData[2][2];
             Ðý×ª¾ØÕó.r[2].m128_f32[0] = l¾ØÕó.mData[0][0]; Ðý×ª¾ØÕó.r[2].m128_f32[1] = l¾ØÕó.mData[0][1];
             Ðý×ª¾ØÕó.r[2].m128_f32[2] = l¾ØÕó.mData[0][2];
+            Ðý×ª¾ØÕó.r[3].m128_f32[0] = l¾ØÕó.mData[3][0]; Ðý×ª¾ØÕó.r[3].m128_f32[1] = l¾ØÕó.mData[3][1];
+            Ðý×ª¾ØÕó.r[3].m128_f32[2] = l¾ØÕó.mData[3][2];
             Ðý×ª = XMMatrixRotationY(-90 * XM_PI / 180);
-            Ðý×ª¾ØÕó = Ðý×ª * Ðý×ª¾ØÕó;
+            Ðý×ª¾ØÕó = Ðý×ª¾ØÕó * Ðý×ª;
             Ðý×ª¾ØÕó.r[3].m128_f32[0] = l¾ØÕó.mData[3][2]; Ðý×ª¾ØÕó.r[3].m128_f32[1] = l¾ØÕó.mData[3][1];
             Ðý×ª¾ØÕó.r[3].m128_f32[2] = -l¾ØÕó.mData[3][0];
 
@@ -2530,6 +2670,7 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
     UINT u = 0;
     UINT v = 0;
     UINT w = 0;
+    int x, y = 0;
     XMMATRIX ±ä»»¾ØÕó = XMMatrixIdentity();
     XMMATRIX ±ä»»¾ØÕó2 = XMMatrixIdentity();
     XMMATRIX Ðý×ª±ä»» = XMMatrixIdentity();
@@ -2545,6 +2686,7 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
     UINT lµ±Ç°ÎïÌå¼ÆÊý = 0;
     S±ä»»½Úµã* ¹Ç÷À½Úµã;
     UINT Ö¡Æ«ÒÆ = 0;
+    bool ÊÇ·ñÎªÁã¾ØÕó = false;
 
     XMStoreFloat4x3(&³õÊ¼¾ØÕó, XMMatrixIdentity());
 
@@ -2577,7 +2719,14 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
                         {
                             if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Î»ÖÃ.size() == 0)
                             {
-                                XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÊôÐÔ->ÔªËØ[n]->±ä»»);
+                                ÊÇ·ñÎªÁã¾ØÕó = true;
+                                for (x = 0; x < 4; x++)
+                                    for (y = 0; y < 4; y++)
+                                        if (ÔìÐÍ->°ó¶¨ÔìÐÍ[ÊôÐÔ->ÔªËØ[n]->ÎïÌåÃû³Æ].r[x].m128_f32[y] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = false;
+                                if (ÊÇ·ñÎªÁã¾ØÕó)
+                                    XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÊôÐÔ->ÔªËØ[n]->±ä»»);
+                                else
+                                    XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÔìÐÍ->°ó¶¨ÔìÐÍ[ÊôÐÔ->ÔªËØ[n]->ÎïÌåÃû³Æ]);
                             }
 
                             //Î»ÖÃ±ä»»
@@ -2635,7 +2784,14 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
                             //Ðý×ª±ä»»
                             if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª.size() == 0)
                             {
-                                XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÊôÐÔ->ÔªËØ[n]->±ä»»);
+                                ÊÇ·ñÎªÁã¾ØÕó = true;
+                                for (x = 0; x < 4; x++)
+                                    for (y = 0; y < 4; y++)
+                                        if (ÔìÐÍ->°ó¶¨ÔìÐÍ[ÊôÐÔ->ÔªËØ[n]->ÎïÌåÃû³Æ].r[x].m128_f32[y] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = false;
+                                if (ÊÇ·ñÎªÁã¾ØÕó)
+                                    XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÊôÐÔ->ÔªËØ[n]->±ä»»);
+                                else
+                                XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÔìÐÍ->°ó¶¨ÔìÐÍ[ÊôÐÔ->ÔªËØ[n]->ÎïÌåÃû³Æ]);
                             }
 
                             //ÔÚÖ¡Ç°»òÖ¡ÉÏ
@@ -2722,7 +2878,14 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
                             //Ëõ·Å±ä»»
                             if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ëõ·Å.size() == 0)
                             {
-                                XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÊôÐÔ->ÔªËØ[n]->±ä»»);
+                                ÊÇ·ñÎªÁã¾ØÕó = true;
+                                for (x = 0; x < 4; x++)
+                                    for (y = 0; y < 4; y++)
+                                        if (ÔìÐÍ->°ó¶¨ÔìÐÍ[ÊôÐÔ->ÔªËØ[n]->ÎïÌåÃû³Æ].r[x].m128_f32[y] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = false;
+                                if (ÊÇ·ñÎªÁã¾ØÕó)
+                                    XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÊôÐÔ->ÔªËØ[n]->±ä»»);
+                                else
+                                    XMStoreFloat4x3(&¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].ÎïÌå±ä»»[n], ÔìÐÍ->°ó¶¨ÔìÐÍ[ÊôÐÔ->ÔªËØ[n]->ÎïÌåÃû³Æ]);
                             }
                             // 
                             //ÔÚÖ¡Ç°»òÇ°Ö¡ÉÏ
@@ -2840,7 +3003,21 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
                             //Î»ÖÃ±ä»»
                             if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Î»ÖÃ.size() == 0)
                             {
-                                ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Î»ÖÃ = ¹Ç÷À½Úµã->Ô­Ê¼Î»ÖÃ;
+                                ÊÇ·ñÎªÁã¾ØÕó = true;
+                                for (x = 0; x < 4; x++)
+                                    for (y = 0; y < 4; y++)
+                                        if (ÔìÐÍ->°ó¶¨ÔìÐÍ[m¹Ç÷ÀÃû³Æ[n]].r[x].m128_f32[y] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = false;
+                                if (ÊÇ·ñÎªÁã¾ØÕó)
+                                {
+                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Î»ÖÃ = ¹Ç÷À½Úµã->Ô­Ê¼Î»ÖÃ;
+                                }
+                                else
+                                {
+                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Î»ÖÃ.x = ÔìÐÍ->°ó¶¨ÔìÐÍ[m¹Ç÷ÀÃû³Æ[n]].r[3].m128_f32[0];
+                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Î»ÖÃ.y = ÔìÐÍ->°ó¶¨ÔìÐÍ[m¹Ç÷ÀÃû³Æ[n]].r[3].m128_f32[1];
+                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Î»ÖÃ.z = ÔìÐÍ->°ó¶¨ÔìÐÍ[m¹Ç÷ÀÃû³Æ[n]].r[3].m128_f32[2];
+                                }
+
                             }
 
                             //ÔÚÖ¡Ç°»òÇ°Ö¡ÉÏ
@@ -2888,20 +3065,31 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢ÎïÌå¶¯»­ÐÅÏ¢()
                             //Ðý×ª±ä»»
                             if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª.size() == 0)
                             {
-                                ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Ðý×ª = ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª;
-                                XMStoreFloat3x3(&¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].Ðý×ª, XMMatrixRotationRollPitchYaw(
-                                    ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª.x * XM_PI / 180, ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª.y * XM_PI / 180, ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª.z * XM_PI / 180));
+                                ÊÇ·ñÎªÁã¾ØÕó = true;
+                                for (x = 0; x < 4; x++)
+                                    for (y = 0; y < 4; y++)
+                                        if (ÔìÐÍ->°ó¶¨ÔìÐÍ[m¹Ç÷ÀÃû³Æ[n]].r[x].m128_f32[y] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = false;
+                                if (ÊÇ·ñÎªÁã¾ØÕó)
+                                {
+                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Ðý×ª = ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª;
+                                    XMStoreFloat3x3(&¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].Ðý×ª, XMMatrixRotationRollPitchYaw(
+                                        ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª.x * XM_PI / 180, ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª.y * XM_PI / 180, ¹Ç÷À½Úµã->Ô­Ê¼Ðý×ª.z * XM_PI / 180));
+                                }
+                                else
+                                {
+                                    XMStoreFloat3x3(&¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].Ðý×ª, ÔìÐÍ->°ó¶¨ÔìÐÍ[m¹Ç÷ÀÃû³Æ[n]]);
+                                } 
                             }
 
                             //ÔÚÖ¡Ç°»òÖ¡ÉÏ
                             if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª.size() != 0)
                                 if (m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ö¡Êý >= j)
                                 {
-                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Ðý×ª.z = m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.x;
                                     ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Ðý×ª.x = m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.y;
                                     ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Ðý×ª.y = m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.z;
+                                    ¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].±ä»».Ðý×ª.z = m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.x;
                                     XMStoreFloat3x3(&¹Ç÷À½Úµã->¶¯»­¹ìµÀ[i].Ö¡[j - Ö¡Æ«ÒÆ].Ðý×ª, XMMatrixRotationRollPitchYaw(
-                                        m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.y * XM_PI / 180, 
+                                        m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.y * XM_PI / 180,
                                         m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.z * XM_PI / 180,
                                         m¶¯»­Êý¾Ý->Æ¬¶Î[i].¶¯»­²ã[k].ÎïÌå[m].Ðý×ª[0].Ðý×ª.x * XM_PI / 180));
                                 }
@@ -3019,6 +3207,9 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢¹Ç÷ÀÊ÷(S±ä»»½Úµã* ±ä»»½Úµã)
     XMMATRIX Ðý×ª±ä»»2{};
     XMMATRIX Ðý×ª±ä»»3{};
     XMMATRIX Ðý×ª±ä»»4{};
+    XMMATRIX Ðý×ª±ä»»5{};
+    XMMATRIX Ô¤Ðý×ª = XMMatrixIdentity();
+    XMMATRIX Ô¤Ðý×ª2 = XMMatrixIdentity();
     XMMATRIX Ðý×ª±ä»»²âÊÔ{};
     XMMATRIX ³õÊ¼Ðý×ª{};
     XMMATRIX ³õÊ¼Ðý×ª2{};
@@ -3037,6 +3228,9 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢¹Ç÷ÀÊ÷(S±ä»»½Úµã* ±ä»»½Úµã)
     S±ä»»½Úµã* p±ä»»½Úµã = nullptr;
     S±ä»»½Úµã* p±ä»»½Úµã2 = nullptr;
     XMMATRIX ¹Ç÷ÀÆ«ÒÆ = XMMatrixIdentity();
+    bool ÊÇ·ñÎªÁã¾ØÕó = 0;
+    int u = 0;
+    int v = 0;
 
     for (j = 0; j < ¶¯»­¹ìµÀ.size(); j++)
     {
@@ -3047,14 +3241,36 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢¹Ç÷ÀÊ÷(S±ä»»½Úµã* ±ä»»½Úµã)
                 if (m¹Ç÷ÀÃû³Æ[m] == ±ä»»½Úµã->½ÚµãÃû³Æ)
                 {
                     ×îÖÕ±ä»» = XMMatrixIdentity();
+                    Ô¤Ðý×ª = XMMatrixIdentity();
 
                     p±ä»»½Úµã = ±ä»»½Úµã;
-
                     while (p±ä»»½Úµã->¸¸½Úµã)
                     {
-                        Î»ÖÃ = XMVECTOR{ ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[0], ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[1],
-                            ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[2] };
-                        ×îÖÕ±ä»» *= XMMatrixTranslation(-Î»ÖÃ.m128_f32[0], -Î»ÖÃ.m128_f32[1], -Î»ÖÃ.m128_f32[2]);
+                        ÊÇ·ñÎªÁã¾ØÕó = 1;
+                        for (u = 0; u < 4; u++)
+                            for (v = 0; v < 4; v++)
+                                if (ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[u].m128_f32[v] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = 0;
+                        if (ÊÇ·ñÎªÁã¾ØÕó)
+                        {
+                            Î»ÖÃ2 = XMVECTOR{ -p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÎ»ÖÃ.x, p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÎ»ÖÃ.y, -p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÎ»ÖÃ.z };
+                            if (p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÎ»ÖÃ.x == 0.0f && p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÎ»ÖÃ.y == 0.0f && p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÎ»ÖÃ.z == 0.0f)
+                            {
+                                Î»ÖÃ2.m128_f32[0] = p±ä»»½Úµã->Ô­Ê¼Î»ÖÃ.x;
+                                Î»ÖÃ2.m128_f32[1] = p±ä»»½Úµã->Ô­Ê¼Î»ÖÃ.y;
+                                Î»ÖÃ2.m128_f32[2] = p±ä»»½Úµã->Ô­Ê¼Î»ÖÃ.z;
+                                Î»ÖÃ2 = XMVector3TransformCoord(Î»ÖÃ2, p±ä»»½Úµã->ÊÀ½ç¾ØÕó);
+                                Î»ÖÃ2.m128_f32[0] = Î»ÖÃ2.m128_f32[0] + p±ä»»½Úµã->¸¸½Úµã->±ä»».Î»ÖÃ.x;
+                                Î»ÖÃ2.m128_f32[1] = Î»ÖÃ2.m128_f32[1] + p±ä»»½Úµã->¸¸½Úµã->±ä»».Î»ÖÃ.y;
+                                Î»ÖÃ2.m128_f32[2] = Î»ÖÃ2.m128_f32[2] + p±ä»»½Úµã->¸¸½Úµã->±ä»».Î»ÖÃ.z;
+                            }
+                            ×îÖÕ±ä»» *= XMMatrixTranslation(-Î»ÖÃ2.m128_f32[0], -Î»ÖÃ2.m128_f32[1], -Î»ÖÃ2.m128_f32[2]);
+                        }
+                        else
+                        {
+                            Î»ÖÃ = XMVECTOR{ ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[0], ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[1],
+                                ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[2] };
+                            ×îÖÕ±ä»» *= XMMatrixTranslation(-Î»ÖÃ.m128_f32[0], -Î»ÖÃ.m128_f32[1], -Î»ÖÃ.m128_f32[2]);
+                        }
 
                         float rx = p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Ðý×ª.x * XM_PI / 180;
                         float ry = p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Ðý×ª.y * XM_PI / 180;
@@ -3071,9 +3287,34 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢¹Ç÷ÀÊ÷(S±ä»»½Úµã* ±ä»»½Úµã)
                             p±ä»»½Úµã2 = p±ä»»½Úµã2->¸¸½Úµã;
                         }
                         Ðý×ª±ä»»2 = ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ];
+                        ÊÇ·ñÎªÁã¾ØÕó = 1;
+                        for (u = 0; u < 4; u++)
+                            for (v = 0; v < 4; v++)
+                                if (Ðý×ª±ä»»2.r[u].m128_f32[v] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = 0;
+                        if (ÊÇ·ñÎªÁã¾ØÕó)
+                        {
+                            Ðý×ª±ä»»2 = XMLoadFloat3x3(&p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÐý×ª);
+                            if (p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÐý×ª.m[0][0] == 1.0f && p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÐý×ª.m[1][1] == 1.0f &&
+                                p±ä»»½Úµã->³õÊ¼¹Ç÷ÀÐý×ª.m[2][2] == 1.0f)
+                            {
+                                rx = p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.x * XM_PI / 180;
+                                ry = p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.y * XM_PI / 180;
+                                rz = p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.z * XM_PI / 180;
+                                Ðý×ª±ä»»2 = XMMatrixRotationRollPitchYaw(rx, ry, rz);
+                                p±ä»»½Úµã2 = p±ä»»½Úµã;
+                                while (p±ä»»½Úµã2->¸¸½Úµã)
+                                {
+                                    rx = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.x * XM_PI / 180;
+                                    ry = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.y * XM_PI / 180;
+                                    rz = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.z * XM_PI / 180;
+                                    Ðý×ª±ä»»2 *= XMMatrixRotationRollPitchYaw(rx, ry, rz);
+
+                                    p±ä»»½Úµã2 = p±ä»»½Úµã2->¸¸½Úµã;
+                                }
+                            }
+                        }
                         Ðý×ª±ä»»2.r[3].m128_f32[0] = 0.0f; Ðý×ª±ä»»2.r[3].m128_f32[1] = 0.0f; Ðý×ª±ä»»2.r[3].m128_f32[2] = 0.0f;
                         Ðý×ª±ä»»2 = XMMatrixInverse(0, Ðý×ª±ä»»2);
-                        Ðý×ª±ä»»4 = Ðý×ª±ä»»2 * Ðý×ª±ä»»4;
 
                         p±ä»»½Úµã2 = p±ä»»½Úµã;
                         rx = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Ðý×ª.x * XM_PI / 180;
@@ -3090,33 +3331,62 @@ void C¶¯Ì¬ÎïÌå::ºÏ²¢¹Ç÷ÀÊ÷(S±ä»»½Úµã* ±ä»»½Úµã)
 
                             p±ä»»½Úµã2 = p±ä»»½Úµã2->¸¸½Úµã;
                         }
-                        rx = p±ä»»½Úµã->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.x * XM_PI / 180;
-                        ry = p±ä»»½Úµã->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.y * XM_PI / 180;
-                        rz = p±ä»»½Úµã->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.z * XM_PI / 180;
-                        Ðý×ª±ä»»3 = XMMatrixRotationRollPitchYaw(rx, ry, rz);
                         Ðý×ª±ä»»3 = ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->¸¸½Úµã->½ÚµãÃû³Æ];
-                        Ðý×ª±ä»»3.r[3].m128_f32[0] = 0.0f; Ðý×ª±ä»»3.r[3].m128_f32[1] = 0.0f; Ðý×ª±ä»»3.r[3].m128_f32[2] = 0.0f;
-                        Ðý×ª±ä»»3 = XMMatrixInverse(0, Ðý×ª±ä»»3);
+                        ÊÇ·ñÎªÁã¾ØÕó = 1;
+                        for (u = 0; u < 4; u++)
+                            for (v = 0; v < 4; v++)
+                                if (Ðý×ª±ä»»3.r[u].m128_f32[v] != 0.0f) ÊÇ·ñÎªÁã¾ØÕó = 0;
+                        if (ÊÇ·ñÎªÁã¾ØÕó)
+                        {
+                            Ðý×ª±ä»»3 = XMLoadFloat3x3(&p±ä»»½Úµã->¸¸½Úµã->³õÊ¼¹Ç÷ÀÐý×ª);
+                            if (p±ä»»½Úµã->¸¸½Úµã->³õÊ¼¹Ç÷ÀÐý×ª.m[0][0] == 1.0f && p±ä»»½Úµã->¸¸½Úµã->³õÊ¼¹Ç÷ÀÐý×ª.m[1][1] == 1.0f &&
+                                p±ä»»½Úµã->¸¸½Úµã->³õÊ¼¹Ç÷ÀÐý×ª.m[2][2] == 1.0f)
+                            {
+                                rx = p±ä»»½Úµã->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.x * XM_PI / 180;
+                                ry = p±ä»»½Úµã->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.y * XM_PI / 180;
+                                rz = p±ä»»½Úµã->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.z * XM_PI / 180;
+                                Ðý×ª±ä»»3 = XMMatrixRotationRollPitchYaw(rx, ry, rz);
+                                p±ä»»½Úµã2 = p±ä»»½Úµã->¸¸½Úµã;
+                                while (p±ä»»½Úµã2->¸¸½Úµã)
+                                {
+                                    rx = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.x * XM_PI / 180;
+                                    ry = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.y * XM_PI / 180;
+                                    rz = p±ä»»½Úµã2->¸¸½Úµã->¶¯»­¹ìµÀ[j].Ö¡[0].±ä»».Ðý×ª.z * XM_PI / 180;
+                                    Ðý×ª±ä»»3 *= XMMatrixRotationRollPitchYaw(rx, ry, rz);
 
-                        Ðý×ª±ä»» = Ðý×ª±ä»»3 * Ðý×ª±ä»»;
+                                    p±ä»»½Úµã2 = p±ä»»½Úµã2->¸¸½Úµã;
+                                }
+                            }
+                        }
+                        Ðý×ª±ä»»3.r[3].m128_f32[0] = 0.0f; Ðý×ª±ä»»3.r[3].m128_f32[1] = 0.0f; Ðý×ª±ä»»3.r[3].m128_f32[2] = 0.0f;
+
                         Ðý×ª±ä»» = XMMatrixInverse(0, Ðý×ª±ä»»);
 
-                        ×îÖÕ±ä»» = ×îÖÕ±ä»» * Ðý×ª±ä»»4 * Ðý×ª±ä»»;
+                        ×îÖÕ±ä»» = ×îÖÕ±ä»» * Ðý×ª±ä»»2 * Ðý×ª±ä»»4 * Ðý×ª±ä»» * Ðý×ª±ä»»3;
 
                         ×îÖÕ±ä»» *= XMMatrixTranslation(Î»ÖÃ.m128_f32[0], Î»ÖÃ.m128_f32[1], Î»ÖÃ.m128_f32[2]);
 
+                        Ô¤Ðý×ª *= ÖáºÍÏÞÖÆ[p±ä»»½Úµã->½ÚµãÃû³Æ].Ô¤Ðý×ª;
+                        if (p±ä»»½Úµã->¸¸½Úµã->½ÚµãÃû³Æ == L"¸ù½Úµã")
+                        {
+                            Ô¤Ðý×ª2 = XMMatrixRotationAxis(XMVECTOR{ 0.0f, 0.0f, 1.0f, 0.0f }, XM_PI / 2);
+                            ×îÖÕ±ä»» *= Ô¤Ðý×ª * Ô¤Ðý×ª2;
+                        }
+
                         p±ä»»½Úµã = p±ä»»½Úµã->¸¸½Úµã;
                     }
 
-                    p±ä»»½Úµã = ±ä»»½Úµã;
-                    while (p±ä»»½Úµã->¸¸½Úµã)
-                    {
-                        if (p±ä»»½Úµã->¸¸½Úµã->½ÚµãÃû³Æ == L"¸ù½Úµã") break;
-                        p±ä»»½Úµã = p±ä»»½Úµã->¸¸½Úµã;
-                    }
-                    ×îÖÕ±ä»» *= XMMatrixTranslation(p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Î»ÖÃ.x - ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[0],
-                        p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Î»ÖÃ.y - ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[1],
-                        p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Î»ÖÃ.z - ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[2]);
+                    //p±ä»»½Úµã = ±ä»»½Úµã;
+
+                    //while (p±ä»»½Úµã->¸¸½Úµã)
+                    //{
+                    //    if (p±ä»»½Úµã->¸¸½Úµã->½ÚµãÃû³Æ == L"¸ù½Úµã") break;
+                    //    p±ä»»½Úµã = p±ä»»½Úµã->¸¸½Úµã;
+                    //}
+
+                    //×îÖÕ±ä»» *= XMMatrixTranslation(p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Î»ÖÃ.x - ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[0],
+                    //    p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Î»ÖÃ.y - ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[1],
+                    //    p±ä»»½Úµã->¶¯»­¹ìµÀ[j].Ö¡[k].±ä»».Î»ÖÃ.z - ÔìÐÍ->°ó¶¨ÔìÐÍ[p±ä»»½Úµã->½ÚµãÃû³Æ].r[3].m128_f32[2]);
 
                     XMStoreFloat4x3(&¶¯»­¹ìµÀ[j].Ö¡[k].¹Ç÷À±ä»»[m], ×îÖÕ±ä»»);
 
@@ -3288,7 +3558,8 @@ void C¶¯Ì¬ÎïÌå::ÉèÖÃÍø¸ñÓÅ»¯ÐÅÏ¢(float ·¨ÏòÁ¿ºÏ²¢×î´ó½Ç¶È, float ÌùÍ¼¶¥µã²ÉÑù×î´
 
 void C¶¯Ì¬ÎïÌå::ÊÍ·ÅºÏ²¢¶¥µãË÷Òý¼¯()
 {
-    mºÏ²¢Ë÷Òý¼¯.~vector();
+    mºÏ²¢Ë÷Òý¼¯.clear();
+    mºÏ²¢Ë÷Òý¼¯.shrink_to_fit();
 }
 
 void C¶¯Ì¬ÎïÌå::ÊÍ·ÅÉÏ´«¶Ñ()
@@ -3308,9 +3579,11 @@ void C¶¯Ì¬ÎïÌå::ÊÍ·ÅºÏ²¢ÐÅÏ¢()
 {
     delete mÃÉÆ¤Êý¾Ý; mÃÉÆ¤Êý¾Ý = nullptr;
     delete m¶¯»­Êý¾Ý; m¶¯»­Êý¾Ý = nullptr;
-    delete m¸ù½Úµã; m¸ù½Úµã = nullptr;
+    //delete m¸ù½Úµã; m¸ù½Úµã = nullptr;
     delete ÔìÐÍ; ÔìÐÍ = nullptr;
-    mÓÅ»¯¶¥µã¼¯.~vector();
+    mÓÅ»¯¶¥µã¼¯.clear();
+    mÓÅ»¯¶¥µã¼¯.shrink_to_fit();
+    ÖáºÍÏÞÖÆ.clear();
 }
 
 C¶¯Ì¬ÎïÌå::~C¶¯Ì¬ÎïÌå()
@@ -3319,4 +3592,7 @@ C¶¯Ì¬ÎïÌå::~C¶¯Ì¬ÎïÌå()
     delete[] s¹Ç÷À±ä»»; s¹Ç÷À±ä»» = nullptr;
     delete s±¸ÓÃ×ÊÁÏ; s±¸ÓÃ×ÊÁÏ = nullptr;
     if (¶¥µã¼¯) delete[] ¶¥µã¼¯; ¶¥µã¼¯ = nullptr;
+    m¹Ç÷ÀÃû³Æ.clear();
+    m¹Ç÷ÀÃû³Æ.shrink_to_fit();
+    delete m¸ù½Úµã; m¸ù½Úµã = nullptr;
 }

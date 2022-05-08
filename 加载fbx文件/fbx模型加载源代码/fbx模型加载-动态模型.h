@@ -84,6 +84,7 @@ public:
 	vector<S动画轨道> 动画轨道;
 	UINT 当前轨道 = 0;
 	UINT 骨骼数量 = 0;
+	UINT 线程数量 = thread::hardware_concurrency();
 
 	void 绘制网格(UINT 属性);
 	void 加载FBX文件(const WCHAR* 文件路径, wstring 物体名称键, DXGI_FORMAT 索引格式, float 体素粒度);
@@ -373,12 +374,24 @@ private:
 		S蒙皮数据() {  };
 		~S蒙皮数据() { };
 	};
+	struct S备用资料
+	{
+		vector<S顶点> 顶点集;
+		vector<UINT> 索引;
+		vector<USHORT> s索引;
+		vector<wstring> 路径集;
+
+		S备用资料() {};
+		~S备用资料() 
+		{
+		};
+	};
 	struct S帧2
 	{
 		SSRT变换 变换;
 		XMFLOAT3X3 旋转;
 
-		S帧2() 
+		S帧2()
 		{
 			旋转 = XMFLOAT3X3
 			{
@@ -395,7 +408,7 @@ private:
 	{
 		vector<S帧2> 帧;
 
-		S动画轨道2() 
+		S动画轨道2()
 		{
 		};
 		~S动画轨道2()
@@ -438,22 +451,14 @@ private:
 			if (子节点) delete[] 子节点;
 		};
 	};
-	struct S备用资料
-	{
-		vector<S顶点> 顶点集;
-		vector<UINT> 索引;
-		vector<USHORT> s索引;
-		vector<wstring> 路径集;
-
-		S备用资料() {};
-		~S备用资料() 
-		{
-		};
-	};
 	struct S造型
 	{
 		map<wstring, XMMATRIX> 绑定造型;
 		map<wstring, XMMATRIX> 角色造型;
+	};
+	struct S轴和限制
+	{
+		XMMATRIX 预旋转;
 	};
 
 	UINT m顶点计数 = 0;
@@ -474,15 +479,17 @@ private:
 
 	S动画数据* m动画数据 = nullptr;
 	S蒙皮数据* m蒙皮数据 = nullptr;
-	vector<wstring> m骨骼名称;
 	vector<S综合变换> m骨骼变换;
-	S变换节点* m根节点 = nullptr;
 	S造型* 造型 = nullptr;
+	S变换节点* m根节点 = nullptr;
+	vector<wstring> m骨骼名称;
 
 	XMMATRIX s物体变换;
 	XMMATRIX* s骨骼变换 = nullptr;
 
 	C共享资源* 共享资源 = nullptr;
+
+	map<wstring, S轴和限制> 轴和限制;
 
 	//加载物体信息
 	void 加载节点(FbxNode* p节点);
@@ -491,6 +498,7 @@ private:
 	void 加载材质(FbxNode* p网格节点, C网格属性::S属性* 属性);
 	void 加载材质属性(FbxSurfaceMaterial* p表面材质, C网格属性::S属性* 属性);
 	void 加载纹理(FbxSurfaceMaterial* p表面材质, C网格属性::S属性* 属性);
+	void 加载轴和限制(FbxNode* p节点);
 
 	void 生成纹理描述符();
 
@@ -501,6 +509,8 @@ private:
 	void 合并顶点(UINT 控制顶点集, UINT 控制顶点索引, float 最小cos角度, float 最大uv间隔);
 	void 释放合并顶点索引集();
 	void 释放合并信息();
+	static void 优化顶点线程(S备用资料* s备用资料, vector<S合并索引集>* m合并索引集, int i, bool* 是否结束);
+	static void 优化顶点线程初始化();
 
 	void 加载动画(FbxScene* p场景);
 	void 加载音效层(FbxAudioLayer* p音效层, UINT 音效层索引, UINT 片段索引);
@@ -510,6 +520,9 @@ private:
 	void 加载曲线序列(FbxAnimCurve* p曲线, FbxProperty* p属性);
 	void 加载骨骼数据(FbxNode* p骨骼节点);
 	void 加载造型(FbxScene* p场景);
+	void 补充骨骼树();
+	S变换节点* 回溯根节点(S变换节点* p骨骼节点);
+	void 遍历骨骼树(S变换节点* p骨骼节点);
 
 	int 插入标志转索引(int 标志);
 	int 恒定标志转索引(int 标志);
